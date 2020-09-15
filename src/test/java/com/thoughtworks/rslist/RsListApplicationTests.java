@@ -85,20 +85,59 @@ class RsListApplicationTests {
     }
 
     @Test
-    void should_update_one_RsEvent() throws Exception {
-        String jsonSting = "{\"eventName\" : \"只传递name\"}";
+    void should_update_one_RsEvent_name() throws Exception {
+        RsEvent rsEvent =new RsEvent("只修改name",null);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonSting = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(put("/rs/update?index=1").content(jsonSting).contentType(MediaType.APPLICATION_JSON));
 
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$",hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName", is("只传递name")))
+                .andExpect(jsonPath("$[0].eventName", is("只修改name")))
                 .andExpect(jsonPath("$[0].keyWord", is("食品")))
                 .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
                 .andExpect(jsonPath("$[1].keyWord", is("经济")))
                 .andExpect(jsonPath("$[2].eventName", is("疫苗上市了")))
                 .andExpect(jsonPath("$[2].keyWord", is("医药")));
+    }@Test
+    void should_update_one_RsEvent_key() throws Exception {
+        RsEvent rsEvent =new RsEvent(null,"只修改key");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonSting = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(put("/rs/update?index=1").content(jsonSting).contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(3)))
+                .andExpect(jsonPath("$[0].eventName", is("猪肉涨价了")))
+                .andExpect(jsonPath("$[0].keyWord", is("只修改key")))
+                .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
+                .andExpect(jsonPath("$[1].keyWord", is("经济")))
+                .andExpect(jsonPath("$[2].eventName", is("疫苗上市了")))
+                .andExpect(jsonPath("$[2].keyWord", is("医药")));
     }
+    @Test
+    void should_update_one_RsEvent_both() throws Exception {
+        RsEvent rsEvent =new RsEvent("修改name","也修改key");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonSting = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(put("/rs/update?index=1").content(jsonSting).contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(3)))
+                .andExpect(jsonPath("$[0].eventName", is("修改name")))
+                .andExpect(jsonPath("$[0].keyWord", is("也修改key")))
+                .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
+                .andExpect(jsonPath("$[1].keyWord", is("经济")))
+                .andExpect(jsonPath("$[2].eventName", is("疫苗上市了")))
+                .andExpect(jsonPath("$[2].keyWord", is("医药")));
+    }
+
 
     @Test
     void should_delete_one_RsEvent() throws Exception {
