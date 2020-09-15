@@ -6,8 +6,8 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
 
 @RestController
 public class RsController {
@@ -42,5 +42,15 @@ public class RsController {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent rsEvent1 = objectMapper.readValue(jsonSting,RsEvent.class);
     rsList.add(rsEvent1);
+  }
+
+  @PutMapping("/rs/update")
+  public void updateRsEvent(@RequestParam Integer index, @RequestBody String jsonString){
+
+  }
+
+  @DeleteMapping("/rs/delete/{index}")
+  public void deleteRsEvent(@PathVariable Integer index){
+    rsList.remove(index-1);
   }
 }

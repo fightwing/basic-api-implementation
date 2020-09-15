@@ -12,8 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -83,8 +82,36 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[2].keyWord", is("医药")))
                 .andExpect(jsonPath("$[3].eventName", is("疫情终将结束")))
                 .andExpect(jsonPath("$[3].keyWord", is("信念")));
-
-
     }
+
+    @Test
+    void should_update_one_RsEvent() throws Exception {
+        String jsonSting = "{\"eventName\" : \"只传递name\"}";
+        mockMvc.perform(put("/rs/update?index=1").content(jsonSting).contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(3)))
+                .andExpect(jsonPath("$[0].eventName", is("只传递name")))
+                .andExpect(jsonPath("$[0].keyWord", is("食品")))
+                .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
+                .andExpect(jsonPath("$[1].keyWord", is("经济")))
+                .andExpect(jsonPath("$[2].eventName", is("疫苗上市了")))
+                .andExpect(jsonPath("$[2].keyWord", is("医药")));
+    }
+
+    @Test
+    void should_delete_one_RsEvent() throws Exception {
+        mockMvc.perform(delete("/rs/delete/3"));
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)))
+                .andExpect(jsonPath("$[0].eventName", is("猪肉涨价了")))
+                .andExpect(jsonPath("$[0].keyWord", is("食品")))
+                .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
+                .andExpect(jsonPath("$[1].keyWord", is("经济")));
+    }
+
 
 }
