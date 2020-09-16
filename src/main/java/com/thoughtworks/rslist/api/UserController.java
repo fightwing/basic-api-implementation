@@ -37,7 +37,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user")
+    @GetMapping("/users")
     public List<User> getUserList(){
         return userList;
     }

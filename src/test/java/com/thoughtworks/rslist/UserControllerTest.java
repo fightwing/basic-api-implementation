@@ -103,4 +103,17 @@ public class UserControllerTest {
         Boolean flag = userController.isUserNameExist(user);
         assertEquals(true,flag);
     }
+
+    @Test
+    void should_return_all_user_list() throws Exception {
+        mockMvc.perform(get("/users"))
+                .andExpect(jsonPath("$",hasSize(1)))
+                .andExpect(jsonPath("$[0].name",is("Bob")))
+                .andExpect(jsonPath("$[0].gender",is("male")))
+                .andExpect(jsonPath("$[0].age",is(18)))
+                .andExpect(jsonPath("$[0].email",is("a@b.com")))
+                .andExpect(jsonPath("$[0].phone",is("12345678911")))
+                .andExpect(status().isOk());
+
+    }
 }
