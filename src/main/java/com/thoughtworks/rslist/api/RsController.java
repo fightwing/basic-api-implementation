@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.channels.MulticastChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +53,11 @@ public class RsController {
       userController.register(rsEvent1.getUser());
     }
     rsList.add(rsEvent1);
-    return ResponseEntity.created(null).build();
-
+    String index = String.valueOf(rsList.indexOf(rsEvent1));
+    HttpStatus status = HttpStatus.CREATED;
+    MultiValueMap<String,String> headers = new HttpHeaders();
+    headers.add("index", index);
+    return new ResponseEntity(headers,status);
   }
 
   @PutMapping("/rs/update")

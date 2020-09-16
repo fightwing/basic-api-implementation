@@ -17,8 +17,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -44,10 +43,13 @@ class RsControllerTests {
                 .andExpect(jsonPath("$",hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("猪肉涨价了")))
                 .andExpect(jsonPath("$[0].keyWord", is("食品")))
+                .andExpect(jsonPath("$[0]",not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
                 .andExpect(jsonPath("$[1].keyWord", is("经济")))
+                .andExpect(jsonPath("$[1]",not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("疫苗上市了")))
-                .andExpect(jsonPath("$[2].keyWord", is("医药")));
+                .andExpect(jsonPath("$[2].keyWord", is("医药")))
+                .andExpect(jsonPath("$[2]",not(hasKey("user"))));
     }
 
     @Test
@@ -79,13 +81,15 @@ class RsControllerTests {
     }
 
     @Test
-    void should_add_one_rs_list() throws Exception {
-        RsEvent rsEvent =new RsEvent("疫情终将结束","信念",user);
+    void should_add_one_event() throws Exception {
+        User user =new User("Bob", "male", 18,"a@b.com","12345678911");
+        RsEvent rsEvent =new RsEvent("疫情终将结束","信念", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
 
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(header().string("index","3"));
 
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
