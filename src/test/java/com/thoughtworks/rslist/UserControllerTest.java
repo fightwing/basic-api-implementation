@@ -2,6 +2,7 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
 
     @Test
     void should_register_user() throws Exception {
@@ -80,10 +83,24 @@ public class UserControllerTest {
     }
     @Test
     void should_error_when_phone_irregular() throws Exception {
-        User user =new User("Bob", "male", 18,"a@b.com","123456789111111");
+        User user = new User("Bob", "male", 18,"a@b.com","123456789111111");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+    @Test
+    void should_return_false_when_userName_is_not_exist(){
+        UserController userController = new UserController();
+        User user = new User("Tom", "male", 18,"a@b.com","123456789111111");
+        Boolean flag = userController.isUserNameExist(user);
+        assertEquals(false,flag);
+    }
+    @Test
+    void should_return_true_when_userName_is_not_exist(){
+        UserController userController = new UserController();
+        User user = new User("Bob", "male", 18,"a@b.com","123456789111111");
+        Boolean flag = userController.isUserNameExist(user);
+        assertEquals(true,flag);
     }
 }

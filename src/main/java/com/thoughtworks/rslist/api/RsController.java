@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 public class RsController {
+  private UserController userController;
   private List<RsEvent> rsList = initRsEventList();
 
   private List<RsEvent> initRsEventList() {
@@ -44,6 +45,9 @@ public class RsController {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent rsEvent1 = objectMapper.readValue(jsonSting,RsEvent.class);
     rsList.add(rsEvent1);
+    if (userController.isUserNameExist(rsEvent1.getUser())){
+      userController.register(rsEvent1.getUser());
+    }
   }
 
   @PutMapping("/rs/update")
