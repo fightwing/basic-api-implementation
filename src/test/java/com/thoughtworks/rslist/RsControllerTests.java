@@ -57,15 +57,18 @@ class RsControllerTests {
         mockMvc.perform(get("/rs/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$.keyWord", is("食品")));
+                .andExpect(jsonPath("$.keyWord", is("食品")))
+                .andExpect(jsonPath("$",not(hasKey("user"))));
         mockMvc.perform(get("/rs/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName", is("股市崩盘了")))
-                .andExpect(jsonPath("$.keyWord", is("经济")));
+                .andExpect(jsonPath("$.keyWord", is("经济")))
+                .andExpect(jsonPath("$",not(hasKey("user"))));
         mockMvc.perform(get("/rs/3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName", is("疫苗上市了")))
-                .andExpect(jsonPath("$.keyWord", is("医药")));
+                .andExpect(jsonPath("$.keyWord", is("医药")))
+                .andExpect(jsonPath("$",not(hasKey("user"))));
 
     }
 
