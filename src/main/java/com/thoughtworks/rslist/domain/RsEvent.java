@@ -1,5 +1,7 @@
 package com.thoughtworks.rslist.domain;
 
+import javax.validation.Valid;
+
 /**
  * @author Boyu Yuan
  * @date 2020/9/15 15:52
@@ -7,6 +9,7 @@ package com.thoughtworks.rslist.domain;
 public class RsEvent {
     private String eventName;
     private String keyWord;
+    @Valid
     private User user;
 
     public RsEvent(String eventName, String keyWord, User user) {

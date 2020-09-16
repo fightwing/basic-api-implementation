@@ -2,6 +2,7 @@ package com.thoughtworks.rslist;
 
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.domain.RsEvent;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -82,7 +84,8 @@ class RsListApplicationTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
 
-        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON));
+        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
@@ -103,7 +106,8 @@ class RsListApplicationTests {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String jsonSting = objectMapper.writeValueAsString(rsEvent);
-        mockMvc.perform(put("/rs/update?index=1").content(jsonSting).contentType(MediaType.APPLICATION_JSON));
+        mockMvc.perform(put("/rs/update?index=1").content(jsonSting).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
@@ -164,6 +168,5 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
                 .andExpect(jsonPath("$[1].keyWord", is("经济")));
     }
-
 
 }
