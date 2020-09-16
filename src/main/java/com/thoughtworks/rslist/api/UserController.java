@@ -5,6 +5,8 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.exception.RsEventNotValidRequestParamException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ import java.util.stream.Stream;
 public class UserController {
 
     List<User> userList = initRsUserList();
-
+    private static Logger log = LoggerFactory.getLogger(UserController.class);
     private List<User> initRsUserList() {
         User user =new User("Bob", "male", 18,"a@b.com","12345678911");
         List<User> userList1 = new ArrayList<>();
@@ -62,6 +64,8 @@ public class UserController {
         }else {
             errorMessage = e.getMessage();
         }
+        log.info("测试输出异常");
+        log.error(errorMessage);
 
         Error error = new Error();
         error.setError(errorMessage);

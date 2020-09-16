@@ -1,12 +1,17 @@
 package com.thoughtworks.rslist.api;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.Log.LogConfig;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.exception.RsEventNotValidRequestParamException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +20,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.PrivateKey;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
+
 @RestController
 public class RsController {
-   UserController userController = new UserController();
+  private static Logger log = LoggerFactory.getLogger(RsController.class);
+
+  UserController userController = new UserController();
   private List<RsEvent> rsList = initRsEventList();
 
   private List<RsEvent> initRsEventList() {
@@ -92,13 +100,15 @@ public class RsController {
 
   @ExceptionHandler({RsEventNotValidException.class, MethodArgumentNotValidException.class, RsEventNotValidRequestParamException.class})
   public ResponseEntity rsExceptionHandler(Exception e){
-
+    LogConfig logConfig = new LogConfig();
     String errorMessage;
     if (e instanceof MethodArgumentNotValidException){
       errorMessage = "invalid param";
     }else {
       errorMessage = e.getMessage();
     }
+    log.info("测试输出异常");
+    log.error(errorMessage);
 
     Error error = new Error();
     error.setError(errorMessage);
