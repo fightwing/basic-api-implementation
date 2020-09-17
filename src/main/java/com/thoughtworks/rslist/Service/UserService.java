@@ -58,4 +58,10 @@ public class UserService {
     public UserPO getOneUser(Integer id){
         return userRepository.findById(id).get();
     }
+
+    public void deleteOneUser(Integer id){
+        userRepository.deleteById(id);
+    }
+
+
 }

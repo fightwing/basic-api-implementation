@@ -8,6 +8,7 @@ import com.thoughtworks.rslist.po.UserPO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,16 @@ public class UserController {
     public UserPO getOneUserPO(@PathVariable Integer id){
         UserPO userPO = userService.getOneUser(id);
         return userPO;
+    }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity deleteOneUser(@PathVariable Integer id){
+        try {
+            userService.deleteOneUser(id);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity( HttpStatus.OK);
     }
 
 

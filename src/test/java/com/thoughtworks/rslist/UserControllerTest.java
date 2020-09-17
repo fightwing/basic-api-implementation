@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.Service.UserService;
 import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.po.UserPO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,11 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,7 +31,7 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
+    UserService userService;
 
     @Test
     void should_register_user() throws Exception {
@@ -125,6 +126,12 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.age",is(18)))
                 .andExpect(jsonPath("$.email",is("a@b.com")))
                 .andExpect(jsonPath("$.phone",is("12345678911")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void should_delete_one_user() throws Exception {
+        mockMvc.perform(delete("/user/6"))
                 .andExpect(status().isOk());
     }
 }
