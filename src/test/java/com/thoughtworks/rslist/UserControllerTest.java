@@ -2,6 +2,7 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.Service.UserService;
 import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.User;
 import org.junit.jupiter.api.Test;
@@ -30,18 +31,19 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
 
+
     @Test
     void should_register_user() throws Exception {
-        User user =new User("Bob", "male", 18,"a@b.com","12345678911");
+        User user =new User("Vector", "male", 18,"a@b.com","12345678911");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
-        mockMvc.perform(get("/user"))
+        mockMvc.perform(get("/users"))
                 .andExpect(jsonPath("$",hasSize(1)))
-                .andExpect(jsonPath("$[0].name",is("Bob")))
+                .andExpect(jsonPath("$[0].userName",is("Bob")))
                 .andExpect(jsonPath("$[0].gender",is("male")))
                 .andExpect(jsonPath("$[0].age",is(18)))
                 .andExpect(jsonPath("$[0].email",is("a@b.com")))
@@ -89,20 +91,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
-    @Test
-    void should_return_false_when_userName_is_not_exist(){
-        UserController userController = new UserController();
-        User user = new User("Tom", "male", 18,"a@b.com","123456789111111");
-        Boolean flag = userController.isUserNameExist(user);
-        assertEquals(false,flag);
-    }
-    @Test
-    void should_return_true_when_userName_is_not_exist(){
-        UserController userController = new UserController();
-        User user = new User("Bob", "male", 18,"a@b.com","123456789111111");
-        Boolean flag = userController.isUserNameExist(user);
-        assertEquals(true,flag);
-    }
+
 
     @Test
     void should_return_all_user_list() throws Exception {
@@ -126,5 +115,16 @@ public class UserControllerTest {
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error",is("invalid user")));
+    }
+
+    @Test
+    void should_return_one_user() throws Exception {
+        mockMvc.perform(get("/user/1"))
+                .andExpect(jsonPath("$.userName",is("Bob")))
+                .andExpect(jsonPath("$.gender",is("male")))
+                .andExpect(jsonPath("$.age",is(18)))
+                .andExpect(jsonPath("$.email",is("a@b.com")))
+                .andExpect(jsonPath("$.phone",is("12345678911")))
+                .andExpect(status().isOk());
     }
 }

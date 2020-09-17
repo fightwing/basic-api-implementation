@@ -4,6 +4,7 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.Log.LogConfig;
+import com.thoughtworks.rslist.Service.UserService;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
@@ -12,6 +13,7 @@ import com.thoughtworks.rslist.exception.RsEventNotValidRequestParamException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,8 @@ import java.util.List;
 public class RsController {
   private static Logger log = LoggerFactory.getLogger(RsController.class);
 
-  UserController userController = new UserController();
+
+  UserService userService;
   private List<RsEvent> rsList = initRsEventList();
 
   private List<RsEvent> initRsEventList() {
@@ -68,8 +71,9 @@ public class RsController {
   public ResponseEntity addEvent(@RequestBody @Valid String jsonSting) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent rsEvent1 = objectMapper.readValue(jsonSting,RsEvent.class);
-    if (!userController.isUserNameExist(rsEvent1.getUser())){
-      userController.register(rsEvent1.getUser());
+
+    if (!userService.isUserNameExist(rsEvent1.getUser())){
+      userService.addUserPO(userService.userToUserPO(rsEvent1.getUser()));
     }
     rsList.add(rsEvent1);
     String index = String.valueOf(rsList.indexOf(rsEvent1));

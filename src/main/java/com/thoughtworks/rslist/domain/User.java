@@ -22,9 +22,9 @@ public class User {
     private String phone;
     private int voteNum = 10;
 
-    public User(String name, String genger, int age, String email, String phone) {
+    public User(String name, String gender, int age, String email, String phone) {
         this.name = name;
-        this.gender = genger;
+        this.gender = gender;
         this.age = age;
         this.email = email;
         this.phone = phone;
@@ -45,8 +45,8 @@ public class User {
         return gender;
     }
 
-    public void setGender(String genger) {
-        this.gender = genger;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public int getAge() {

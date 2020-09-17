@@ -1,12 +1,13 @@
 package com.thoughtworks.rslist.api;
 
-import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.Service.UserService;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.Error;
-import com.thoughtworks.rslist.exception.RsEventNotValidException;
-import com.thoughtworks.rslist.exception.RsEventNotValidRequestParamException;
+
+import com.thoughtworks.rslist.po.UserPO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 /**
  * @author Boyu Yuan
@@ -25,8 +24,13 @@ import java.util.stream.Stream;
 @RestController
 public class UserController {
 
+    @Autowired
+    UserService userService;
+
     List<User> userList = initRsUserList();
+
     private static Logger log = LoggerFactory.getLogger(UserController.class);
+
     private List<User> initRsUserList() {
         User user =new User("Bob", "male", 18,"a@b.com","12345678911");
         List<User> userList1 = new ArrayList<>();
@@ -36,24 +40,24 @@ public class UserController {
 
     @PostMapping("/user")
     public void register(@RequestBody @Valid User user){
-        if (!isUserNameExist(user)){
-            userList.add(user);
+
+        if (!userService.isUserNameExist(user)){
+            userService.addUserPO(userService.userToUserPO(user));
         }
     }
 
     @GetMapping("/users")
-    public List<User> getUserList(){
-        return userList;
+    public List<UserPO> getUserList(){
+        return userService.getUserPOs();
     }
 
-    public boolean isUserNameExist(User user){
-         List<User> userList1 = userList.stream().filter(User -> User.getName().equals(user.getName())).collect(Collectors.toList());
-        if (userList1.size() == 0) {
-            return false;
-        }else {
-            return true;
-        }
+
+    @GetMapping("/user/{id}")
+    public UserPO getOneUserPO(@PathVariable Integer id){
+        UserPO userPO = userService.getOneUser(id);
+        return userPO;
     }
+
 
     @ExceptionHandler( MethodArgumentNotValidException.class)
     public ResponseEntity rsExceptionHandler(Exception e){
