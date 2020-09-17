@@ -54,12 +54,12 @@ public class RsController {
 
   @GetMapping("/rs/list")
   public ResponseEntity getRsEventBetween(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
-    if (start <= 0 || end > rsList.size() || start > end){
-      throw new RsEventNotValidRequestParamException("invalid request param");
-    }
+
     if (start == null || end == null){
       return ResponseEntity.ok(rsList);
-    }else {
+    }else if (start <= 0 || end > rsList.size() || start > end){
+      throw new RsEventNotValidRequestParamException("invalid request param");
+    } else {
       return ResponseEntity.ok(rsList.subList(start-1,end));
     }
   }

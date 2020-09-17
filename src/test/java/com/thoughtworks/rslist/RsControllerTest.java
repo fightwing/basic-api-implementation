@@ -2,23 +2,20 @@ package com.thoughtworks.rslist;
 
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.logging.Logger;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -32,11 +29,12 @@ class RsControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-    User user =new User("Bob", "male", 18,"a@b.com","12345678911");
+
 
     @BeforeEach
     public void init(){
         mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
+
     }
 
     @Test
@@ -112,6 +110,7 @@ class RsControllerTest {
 
     @Test
     void should_update_one_RsEvent_name() throws Exception {
+        User user =new User("Bob", "male", 18,"a@b.com","12345678911");
         RsEvent rsEvent =new RsEvent("只修改name",null, user);
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -130,6 +129,7 @@ class RsControllerTest {
                 .andExpect(jsonPath("$[2].keyWord", is("医药")));
     }@Test
     void should_update_one_RsEvent_key() throws Exception {
+        User user =new User("Bob", "male", 18,"a@b.com","12345678911");
         RsEvent rsEvent =new RsEvent(null,"只修改key",user);
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -148,6 +148,7 @@ class RsControllerTest {
     }
     @Test
     void should_update_one_RsEvent_both() throws Exception {
+        User user =new User("Bob", "male", 18,"a@b.com","12345678911");
         RsEvent rsEvent =new RsEvent("修改name","也修改key",user);
         ObjectMapper objectMapper = new ObjectMapper();
 
