@@ -4,6 +4,7 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.Log.LogConfig;
+import com.thoughtworks.rslist.Service.RsService;
 import com.thoughtworks.rslist.Service.UserService;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
@@ -14,28 +15,49 @@ import com.thoughtworks.rslist.exception.RsEventNotValidRequestParamException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-
+@Component
 @RestController
 public class RsController {
+
+  @Autowired
+   UserService userService;
+  @Autowired
+   RsService rsService;
+
+  private static RsController rsController;
+  private void setUserService(UserService userService,RsService rsService){
+    this.userService = userService;
+    this.rsService = rsService;
+  }
+
+  @PostConstruct
+  public void init(){
+    rsController = this;
+    rsController.userService = this.userService;
+    rsController.rsService = this.rsService;
+  }
+
   private static Logger log = LoggerFactory.getLogger(RsController.class);
 
 
-  UserService userService;
   private List<RsEvent> rsList = initRsEventList();
-
   private List<RsEvent> initRsEventList() {
     User user =new User("Bob", "male", 18,"a@b.com","12345678911");
     List<RsEvent> rsEvents = new ArrayList<>();
@@ -67,20 +89,29 @@ public class RsController {
     }
   }
 
+
   @PostMapping("/rs/event")
   public ResponseEntity addEvent(@RequestBody @Valid String jsonSting) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent rsEvent1 = objectMapper.readValue(jsonSting,RsEvent.class);
 
-    if (!userService.isUserNameExist(rsEvent1.getUser())){
-      userService.addUserPO(userService.userToUserPO(rsEvent1.getUser()));
+    if (!rsController.userService.isUserNameExist(rsEvent1.getUser())){
+      HttpStatus status = HttpStatus.BAD_REQUEST;
+      MultiValueMap<String,String> headers = new HttpHeaders();
+      headers.add("message", "添加失败");
+      return new ResponseEntity(headers,status);
+
+    }else{
+      Integer userId = rsController.userService.findIdByName(rsEvent1.getUser().getName());
+      rsController.rsService.addOneEvent(rsController.rsService.rsEventToRsEventPO(rsEvent1,userId));
+      String index = String.valueOf(userId);
+      HttpStatus status = HttpStatus.CREATED;
+      MultiValueMap<String,String> headers = new HttpHeaders();
+      headers.add("index", index);
+      return new ResponseEntity(headers,status);
     }
-    rsList.add(rsEvent1);
-    String index = String.valueOf(rsList.indexOf(rsEvent1));
-    HttpStatus status = HttpStatus.CREATED;
-    MultiValueMap<String,String> headers = new HttpHeaders();
-    headers.add("index", index);
-    return new ResponseEntity(headers,status);
+
+
   }
 
   @PutMapping("/rs/update")

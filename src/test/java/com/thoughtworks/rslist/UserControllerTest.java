@@ -31,7 +31,6 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    UserService userService;
 
     @Test
     void should_register_user() throws Exception {

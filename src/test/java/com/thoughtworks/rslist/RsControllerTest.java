@@ -3,6 +3,7 @@ package com.thoughtworks.rslist;
 
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.domain.RsEvent;
@@ -85,29 +86,29 @@ class RsControllerTest {
     }
 
     @Test
-    void should_add_one_event() throws Exception {
+    void should_return_false_when_add_one_event() throws Exception {
         User user =new User("Bob", "male", 18,"a@b.com","12345678911");
         RsEvent rsEvent =new RsEvent("疫情终将结束","信念", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
 
         mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("index","3"));
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("message","添加失败"));
 
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$",hasSize(4)))
-                .andExpect(jsonPath("$[0].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[0].keyWord", is("食品")))
-                .andExpect(jsonPath("$[1].eventName", is("股市崩盘了")))
-                .andExpect(jsonPath("$[1].keyWord", is("经济")))
-                .andExpect(jsonPath("$[2].eventName", is("疫苗上市了")))
-                .andExpect(jsonPath("$[2].keyWord", is("医药")))
-                .andExpect(jsonPath("$[3].eventName", is("疫情终将结束")))
-                .andExpect(jsonPath("$[3].keyWord", is("信念")));
     }
 
+    @Test
+    void should_add_one_event() throws Exception {
+        User user = new User("Vector", "male", 18, "a@b.com", "12345678911");
+        RsEvent rsEvent = new RsEvent("疫情终将结束", "信念", user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("index", "9"));
+    }
     @Test
     void should_update_one_RsEvent_name() throws Exception {
         User user =new User("Bob", "male", 18,"a@b.com","12345678911");
@@ -203,6 +204,19 @@ class RsControllerTest {
         mockMvc.perform(get("/rs/list?start=0&end=2"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error",is("invalid request param")));
+    }
+
+    @Test
+    void should_add_one_event_to_database() throws Exception {
+        User user =new User("Bob", "male", 18,"a@b.com","12345678911");
+        RsEvent rsEvent =new RsEvent("印度想挑事","政治",user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("index","9"));
+
     }
 
 }

@@ -1,16 +1,11 @@
 package com.thoughtworks.rslist.po;
 
-import com.thoughtworks.rslist.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
+import javax.persistence.*;
 
 /**
  * @author Boyu Yuan
@@ -20,6 +15,7 @@ import javax.validation.Valid;
 @Table(name = "rsevent")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class RsEventPO {
     @Id
     @GeneratedValue

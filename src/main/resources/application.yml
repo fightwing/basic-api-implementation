@@ -3,7 +3,7 @@ spring:
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/rssystem?serverTimezone=GMT
+    url: jdbc:mysql://localhost:3306/rssystem?useSSL=false&serverTimezone=UTC
 
 
   jpa:

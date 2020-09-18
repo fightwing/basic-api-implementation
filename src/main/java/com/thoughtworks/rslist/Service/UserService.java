@@ -23,6 +23,7 @@ public class UserService {
 
     public boolean isUserNameExist(User user){
         List<UserPO> users = userRepository.findAll();
+        users.stream().forEach(userPO -> System.out.println(userPO.getUserName()));
         List<UserPO> userList1 = users.stream().filter(UserPo -> UserPo.getUserName().equals(user.getName())).collect(Collectors.toList());
         if (userList1.size() == 0) {
             return false;
@@ -33,7 +34,6 @@ public class UserService {
 
     public UserPO userToUserPO(User user){
         UserPO userPO = new UserPO();
-        System.out.println(user.getName());
         userPO.setUserName(user.getName());
         userPO.setGender(user.getGender());
         userPO.setAge(user.getAge());
@@ -41,14 +41,13 @@ public class UserService {
         userPO.setPhone(user.getPhone());
 //        userPO.builder().userName(user.getName()).gender(user.getGender()).age(user.getAge())
 //                .email(user.getEmail()).phone(user.getPhone()).voteNum(user.getVoteNum()).build();
-        System.out.println(userPO.getUserName());
-
         return userPO;
     }
 
     public void addUserPO(UserPO userPO){
-        System.out.println(userPO.getUserName());
-        userRepository.save(userPO);
+
+         userRepository.save(userPO);
+
     }
 
     public List<UserPO> getUserPOs(){
@@ -63,5 +62,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-
+    public Integer findIdByName(String name){
+        UserPO userPO = userRepository.findByUserName(name);
+        if (userPO != null){
+            return userPO.getId();
+        }else {
+            return 0;
+        }
+    }
 }
