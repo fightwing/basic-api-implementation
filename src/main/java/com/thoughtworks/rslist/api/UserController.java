@@ -61,11 +61,12 @@ public class UserController {
 
     @DeleteMapping("/user/{id}")
     public ResponseEntity deleteOneUser(@PathVariable Integer id){
-        try {
-            userService.deleteOneUser(id);
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+//        try {
+//            userService.deleteOneUser(id);
+//        } catch (Exception e) {
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+        userService.deleteOneUser(id);
         return new ResponseEntity( HttpStatus.OK);
     }
 

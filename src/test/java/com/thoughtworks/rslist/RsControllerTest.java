@@ -3,8 +3,9 @@ package com.thoughtworks.rslist;
 
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.Service.RsService;
+import com.thoughtworks.rslist.Service.UserService;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
@@ -31,12 +32,15 @@ class RsControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    UserService userService;
+    @Autowired
+    RsService rsService;
 
-    @BeforeEach
-    public void init(){
-        mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
-
-    }
+//    @BeforeEach
+//    public void init(){
+//        mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
+//    }
 
     @Test
     void should_get_rs_list_event_list() throws Exception {
@@ -101,7 +105,7 @@ class RsControllerTest {
     @Test
     void should_add_one_event() throws Exception {
         User user = new User("Vector", "male", 18, "a@b.com", "12345678911");
-        RsEvent rsEvent = new RsEvent("疫情终将结束", "信念", user);
+        RsEvent rsEvent = new RsEvent("测试一下", "信念", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(rsEvent);
 

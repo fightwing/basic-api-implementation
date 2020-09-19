@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -31,6 +32,10 @@ public class UserPO {
     private int age;
     private String email;
     private String phone;
+    @Builder.Default
     private int voteNum = 10;
+
+    @OneToMany(mappedBy = "userPO",cascade = CascadeType.ALL)
+    private List<RsEventPO> rsEventPOS;
 
 }

@@ -22,5 +22,8 @@ public class RsEventPO {
     private int id;
     private String eventName;
     private String keyWord;
-    private int userId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserPO userPO;
 }

@@ -25,39 +25,36 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Component
 @RestController
 public class RsController {
 
-  @Autowired
-   UserService userService;
-  @Autowired
-   RsService rsService;
 
-  private static RsController rsController;
-  private void setUserService(UserService userService,RsService rsService){
-    this.userService = userService;
-    this.rsService = rsService;
-  }
+  @Autowired
+  UserService userService;
+  @Autowired
+  RsService rsService;
 
-  @PostConstruct
-  public void init(){
-    rsController = this;
-    rsController.userService = this.userService;
-    rsController.rsService = this.rsService;
-  }
+
+//  final UserService userService;
+//  final RsService rsService;
+//  public RsController(UserService userService, RsService rsService) {
+//    this.userService = userService;
+//    this.rsService = rsService;
+//  }
+
+
+
 
   private static Logger log = LoggerFactory.getLogger(RsController.class);
 
-
   private List<RsEvent> rsList = initRsEventList();
+
   private List<RsEvent> initRsEventList() {
     User user =new User("Bob", "male", 18,"a@b.com","12345678911");
     List<RsEvent> rsEvents = new ArrayList<>();
@@ -95,15 +92,15 @@ public class RsController {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent rsEvent1 = objectMapper.readValue(jsonSting,RsEvent.class);
 
-    if (!rsController.userService.isUserNameExist(rsEvent1.getUser())){
+    if (!userService.isUserNameExist(rsEvent1.getUser())){
       HttpStatus status = HttpStatus.BAD_REQUEST;
       MultiValueMap<String,String> headers = new HttpHeaders();
       headers.add("message", "添加失败");
       return new ResponseEntity(headers,status);
 
     }else{
-      Integer userId = rsController.userService.findIdByName(rsEvent1.getUser().getName());
-      rsController.rsService.addOneEvent(rsController.rsService.rsEventToRsEventPO(rsEvent1,userId));
+      Integer userId = userService.findIdByName(rsEvent1.getUser().getName());
+      rsService.addOneEvent(rsService.rsEventToRsEventPO(rsEvent1));
       String index = String.valueOf(userId);
       HttpStatus status = HttpStatus.CREATED;
       MultiValueMap<String,String> headers = new HttpHeaders();

@@ -3,11 +3,9 @@ package com.thoughtworks.rslist.Service;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -17,8 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
+
+   final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
 
     public boolean isUserNameExist(User user){
@@ -39,7 +41,8 @@ public class UserService {
         userPO.setAge(user.getAge());
         userPO.setEmail(user.getEmail());
         userPO.setPhone(user.getPhone());
-//        userPO.builder().userName(user.getName()).gender(user.getGender()).age(user.getAge())
+
+//        UserPO userPO1 = UserPO.builder().userName(user.getName()).gender(user.getGender()).age(user.getAge())
 //                .email(user.getEmail()).phone(user.getPhone()).voteNum(user.getVoteNum()).build();
         return userPO;
     }

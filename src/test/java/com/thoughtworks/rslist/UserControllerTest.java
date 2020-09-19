@@ -130,7 +130,7 @@ public class UserControllerTest {
 
     @Test
     void should_delete_one_user() throws Exception {
-        mockMvc.perform(delete("/user/6"))
+        mockMvc.perform(delete("/user/9"))
                 .andExpect(status().isOk());
     }
 }
