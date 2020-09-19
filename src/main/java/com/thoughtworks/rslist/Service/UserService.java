@@ -6,6 +6,7 @@ import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -23,15 +24,14 @@ public class UserService {
     }
 
 
-    public boolean isUserNameExist(User user){
-        List<UserPO> users = userRepository.findAll();
-        users.stream().forEach(userPO -> System.out.println(userPO.getUserName()));
-        List<UserPO> userList1 = users.stream().filter(UserPo -> UserPo.getUserName().equals(user.getName())).collect(Collectors.toList());
-        if (userList1.size() == 0) {
-            return false;
-        }else {
+    public boolean isUserExist(int userId){
+        Optional<UserPO> user = userRepository.findById(userId);
+        if (user.get() != null){
             return true;
+        }else {
+            return false;
         }
+
     }
 
     public UserPO userToUserPO(User user){

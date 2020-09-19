@@ -28,23 +28,14 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    List<User> userList = initRsUserList();
 
     private static Logger log = LoggerFactory.getLogger(UserController.class);
 
-    private List<User> initRsUserList() {
-        User user =new User("Bob", "male", 18,"a@b.com","12345678911");
-        List<User> userList1 = new ArrayList<>();
-        userList1.add(user);
-        return userList1;
-    }
+
 
     @PostMapping("/user")
     public void register(@RequestBody @Valid User user){
-
-        if (!userService.isUserNameExist(user)){
             userService.addUserPO(userService.userToUserPO(user));
-        }
     }
 
     @GetMapping("/users")
@@ -61,11 +52,11 @@ public class UserController {
 
     @DeleteMapping("/user/{id}")
     public ResponseEntity deleteOneUser(@PathVariable Integer id){
-//        try {
-//            userService.deleteOneUser(id);
-//        } catch (Exception e) {
-//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//        }
+        try {
+            userService.deleteOneUser(id);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
         userService.deleteOneUser(id);
         return new ResponseEntity( HttpStatus.OK);
     }

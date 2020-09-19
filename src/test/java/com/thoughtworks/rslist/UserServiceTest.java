@@ -24,14 +24,14 @@ public class UserServiceTest {
     void should_return_false_when_userName_is_not_exist(){
 
         User user = new User("Tom", "male", 18,"a@b.com","123456789111111");
-        Boolean flag = userService.isUserNameExist(user);
+        Boolean flag = userService.isUserExist(10);
         assertEquals(false,flag);
     }
     @Test
     void should_return_true_when_userName_is_not_exist(){
 
         User user = new User("Bob", "male", 18,"a@b.com","123456789111111");
-        Boolean flag = userService.isUserNameExist(user);
+        Boolean flag = userService.isUserExist(10);
         assertEquals(true,flag);
     }
 
