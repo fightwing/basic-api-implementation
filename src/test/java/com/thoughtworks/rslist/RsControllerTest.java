@@ -119,7 +119,7 @@ class RsControllerTest {
     }
     @Test
     void should_update_one_RsEvent_name() throws Exception {
-        String jsonSting = "{\"eventName\":\"只修改name\",\"keyWord\":null,\"userId\":25}";
+        String jsonSting = "{\"eventName\":\"只修改name\",\"keyWord\": null,\"userId\":25}";
 
         mockMvc.perform(patch("/rs/26").content(jsonSting).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

@@ -19,6 +19,6 @@ import java.time.LocalDateTime;
 public class Vote {
     private int userId;
     private int rsEventId;
-    private LocalDateTime time;
+    private LocalDateTime voteTime;
     private int voteNum;
 }

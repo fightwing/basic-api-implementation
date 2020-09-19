@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.po;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,12 +18,13 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class VotePO {
     @Id
     @GeneratedValue
     private int id;
     private int userId;
     private int rsEventId;
-    private LocalDateTime time;
+    private LocalDateTime voteTime;
     private int voteNum;
 }
