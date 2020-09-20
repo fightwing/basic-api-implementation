@@ -59,4 +59,15 @@ public class VoteService {
         return votes;
     }
 
+    public List<Vote> findAllInSpecifiedTimeRange(LocalDateTime startTime, LocalDateTime endTime){
+        List<VotePO> votePOS = voteRepository.findAll();
+        System.out.println(startTime);
+        List<Vote> votes = new ArrayList<>();
+        for (VotePO votePO : votePOS){
+            if (votePO.getVoteTime().isAfter(startTime)&&votePO.getVoteTime().isBefore(endTime)){
+                votes.add(votePOToVote(votePO));
+            }
+        }
+        return votes;
+    }
 }

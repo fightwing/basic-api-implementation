@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -54,6 +55,15 @@ public class voteController {
     public ResponseEntity<List<Vote>> getVoteRecord(@RequestParam int userId, @RequestParam int rsEventId,@RequestParam int pageIndex){
         Pageable pageable = PageRequest.of(pageIndex-1,5);
         List<Vote> votes = voteService.findAllByUserAndRsEventId(userId,rsEventId,pageable);
+        return ResponseEntity.ok(votes);
+    }
+
+    @GetMapping("/voteRecordInSpecifiedTime")
+    public ResponseEntity<List<Vote>> getVoteRecordInSpecifiedTimeRange(@RequestParam String startTime
+            ,@RequestParam String endTime){
+        LocalDateTime start = LocalDateTime.parse(startTime);
+        LocalDateTime end = LocalDateTime.parse(endTime);
+        List<Vote> votes = voteService.findAllInSpecifiedTimeRange(start,end);
         return ResponseEntity.ok(votes);
     }
 

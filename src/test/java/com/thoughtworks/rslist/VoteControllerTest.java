@@ -60,6 +60,16 @@ public class VoteControllerTest {
                     .andExpect(jsonPath("$",hasSize(5)))
                     .andExpect(jsonPath("$[0].userId",is(8)))
                     .andExpect(jsonPath("$[0].rsEventId",is(1)));
+    }
 
+    @Test
+    void should_return_voteRecord_the_specified_time_range() throws Exception {
+        LocalDateTime startTime = LocalDateTime.of(2020,9,19,07,18,54);
+        LocalDateTime endTime = LocalDateTime.of(2020,9,21,12,39,46);
+
+        mockMvc.perform(get("/voteRecordInSpecifiedTime").param("startTime", String.valueOf(startTime))
+                .param("endTime", String.valueOf(endTime)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(11)));
     }
 }

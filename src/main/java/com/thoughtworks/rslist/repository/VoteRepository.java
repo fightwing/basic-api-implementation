@@ -15,5 +15,8 @@ import java.util.List;
 @Repository
 public interface VoteRepository extends PagingAndSortingRepository<VotePO,Integer> {
 
+    @Override
+    List<VotePO> findAll();
+
     List<VotePO> findAllByUserIdAndRsEventId(int userId, int rsEventId, Pageable pageable);
 }
