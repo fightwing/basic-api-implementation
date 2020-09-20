@@ -29,23 +29,15 @@ public class VoteService {
     @Autowired
     UserRepository userRepository;
 
-    public ResponseEntity vote(int voteNum, int userId, LocalDateTime voteTime, Integer rsEventId) {
+    public void vote(int voteNum, int userId, LocalDateTime voteTime, Integer rsEventId) {
         Optional<RsEventPO> rsEventPO = rsRepository.findById(rsEventId);
-        Optional<UserPO> userPO = userRepository.findById(userId);
         rsEventPO.get().setVoteNum(voteNum);
         rsRepository.save(rsEventPO.get());
         VotePO votePO = new VotePO();
         votePO.setUserId(userId);
         votePO.setRsEventId(rsEventId);
         votePO.setVoteTime(voteTime);
+        votePO.setVoteNum(voteNum);
         voteRepository.save(votePO);
-
-
-
-        }else {
-            HttpStatus status = HttpStatus.BAD_REQUEST;
-            return new ResponseEntity(status);
-        }
-
     }
 }

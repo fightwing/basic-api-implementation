@@ -73,4 +73,8 @@ public class UserService {
             return 0;
         }
     }
+
+    public UserPO findById(Integer userId){
+        return userRepository.findById(userId).get();
+    }
 }

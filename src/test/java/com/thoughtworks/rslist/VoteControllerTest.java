@@ -1,5 +1,7 @@
 package com.thoughtworks.rslist;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.domain.Vote;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,8 +27,14 @@ public class VoteControllerTest {
 
     @Test
     void should_vote_succeed() throws Exception {
-        String jsonSting = "{\"voteNum\":5,\"userId\": 25,\"time\":"+ LocalDateTime.now() + "}";
-        mockMvc.perform(post("/rs/vote/17").content(jsonSting)
+        Vote vote = new Vote();
+        vote.setVoteNum(5);
+        vote.setUserId(25);
+        vote.setVoteTime(LocalDateTime.now());
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonString = objectMapper.writeValueAsString(vote);
+        mockMvc.perform(post("/rs/vote/26").content(jsonString)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
