@@ -8,11 +8,14 @@ import com.thoughtworks.rslist.repository.RsRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,4 +43,20 @@ public class VoteService {
         votePO.setVoteNum(voteNum);
         voteRepository.save(votePO);
     }
+
+    public Vote votePOToVote(VotePO votePO){
+        Vote vote = Vote.builder().userId(votePO.getUserId()).rsEventId(votePO.getRsEventId()).voteTime(votePO.getVoteTime())
+                .voteNum(votePO.getVoteNum()).build();
+        return vote;
+    }
+
+    public List<Vote> findAllByUserAndRsEventId(int userId, int rsEventId, Pageable pageable){
+        List<VotePO> votePOS = voteRepository.findAllByUserIdAndRsEventId(userId, rsEventId, pageable);
+        List<Vote> votes = new ArrayList<>();
+        for (VotePO votePO : votePOS){
+            votes.add(votePOToVote(votePO));
+        }
+        return votes;
+    }
+
 }

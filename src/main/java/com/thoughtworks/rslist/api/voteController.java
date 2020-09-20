@@ -10,14 +10,14 @@ import com.thoughtworks.rslist.domain.Vote;
 import com.thoughtworks.rslist.po.UserPO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+
+import java.util.List;
 
 /**
  * @author Boyu Yuan
@@ -48,6 +48,13 @@ public class voteController {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             return new ResponseEntity(status);
         }
+    }
+
+    @GetMapping("/voteRecord")
+    public ResponseEntity<List<Vote>> getVoteRecord(@RequestParam int userId, @RequestParam int rsEventId,@RequestParam int pageIndex){
+        Pageable pageable = PageRequest.of(pageIndex-1,5);
+        List<Vote> votes = voteService.findAllByUserAndRsEventId(userId,rsEventId,pageable);
+        return ResponseEntity.ok(votes);
     }
 
 }
