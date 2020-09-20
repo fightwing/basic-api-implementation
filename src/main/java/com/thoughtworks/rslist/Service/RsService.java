@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -46,6 +48,12 @@ public class RsService {
         return rsEventPO;
     }
 
+    public RsEvent rsEventPOToRsEvent(RsEventPO rsEventPO){
+        RsEvent rsEvent = RsEvent.builder().eventName(rsEventPO.getEventName()).keyWord(rsEventPO.getKeyWord())
+                .id(rsEventPO.getId()).voteNum(rsEventPO.getVoteNum()).build();
+        return rsEvent;
+    }
+
     @Transactional
     public ResponseEntity updateOneEvent(RsEventPO rsEventPO, Integer rsEventId) {
         if (rsRepository.findById(rsEventId).get().getUserPO().getId() == rsEventPO.getUserPO().getId()) {
@@ -61,5 +69,18 @@ public class RsService {
 
     public RsEventPO findById(Integer rsEventId) {
         return rsRepository.findById(rsEventId).get();
+    }
+
+    public List<RsEvent> findAllRsEvent(){
+        List<RsEventPO> rsEventPOS = rsRepository.findAll();
+        List<RsEvent>  rsEvents = new ArrayList<>();
+        for (RsEventPO rsEventPO : rsEventPOS) {
+            rsEvents.add(rsEventPOToRsEvent(rsEventPO));
+        }
+        return rsEvents;
+    }
+
+    public void deleteById(Integer rsEventId){
+        rsRepository.deleteById(rsEventId);
     }
 }

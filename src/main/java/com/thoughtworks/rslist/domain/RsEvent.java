@@ -22,11 +22,14 @@ public class RsEvent {
     private String keyWord;
     @Valid
     private int userId;
+    private int id;
     private int voteNum;
 
-    public RsEvent(String eventName, String keyWord, @Valid int userId) {
+    public RsEvent(String eventName, String keyWord, @Valid int userId,int voteNum) {
         this.eventName = eventName;
         this.keyWord = keyWord;
         this.userId = userId;
+        this.voteNum = voteNum;
     }
 }
+

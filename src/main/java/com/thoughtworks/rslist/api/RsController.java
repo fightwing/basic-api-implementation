@@ -43,36 +43,27 @@ public class RsController {
 
   private static Logger log = LoggerFactory.getLogger(RsController.class);
 
-  private List<RsEvent> rsList = initRsEventList();
-
-  private List<RsEvent> initRsEventList() {
-    User user =new User("Bob", "male", 18,"a@b.com","12345678911");
-    List<RsEvent> rsEvents = new ArrayList<>();
-    rsEvents.add(new RsEvent("猪肉涨价了", "食品", 10));
-    rsEvents.add(new RsEvent("股市崩盘了", "经济",10));
-    rsEvents.add(new RsEvent("疫苗上市了", "医药",10));
-    return rsEvents;
-  }
+  private List<RsEvent> rsList ;
 
 
 
-  @GetMapping("/rs/{index}")
-  public ResponseEntity getOneIndexEvent(@PathVariable int index){
-    if (index <= 0 || index > rsList.size()){
-      throw new RsEventNotValidException("invalid index");
-    }
-    return ResponseEntity.ok(rsList.get(index-1));
+
+
+  @GetMapping("/rs/{rsEventId}")
+  public ResponseEntity getOneIndexEvent(@PathVariable int rsEventId){
+    return ResponseEntity.ok(rsService.rsEventPOToRsEvent(rsService.findById(rsEventId)));
   }
 
   @GetMapping("/rs/list")
-  public ResponseEntity getRsEventBetween(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
-
+  public ResponseEntity getRsEventBetween(@RequestParam(required = false) Integer start,
+                                          @RequestParam(required = false) Integer end){
+    List<RsEvent> rsEvents = rsService.findAllRsEvent();
     if (start == null || end == null){
-      return ResponseEntity.ok(rsList);
-    }else if (start <= 0 || end > rsList.size() || start > end){
+      return ResponseEntity.ok(rsEvents);
+    }else if (start <= 0 || end > rsEvents.size() || start > end){
       throw new RsEventNotValidRequestParamException("invalid request param");
     } else {
-      return ResponseEntity.ok(rsList.subList(start-1,end));
+      return ResponseEntity.ok(rsEvents.subList(start-1,end));
     }
   }
 
@@ -103,9 +94,9 @@ public class RsController {
     rsService.updateOneEvent(rsService.rsEventToRsEventPO(rsEvent),rsEventId);
   }
 
-  @DeleteMapping("/rs/delete/{index}")
-  public void deleteRsEvent(@PathVariable Integer index){
-    rsList.remove(index-1);
+  @DeleteMapping("/rs/{rsEventId}")
+  public void deleteRsEvent(@PathVariable Integer rsEventId){
+    rsService.deleteById(rsEventId);
   }
 
   @ExceptionHandler({RsEventNotValidException.class, MethodArgumentNotValidException.class, RsEventNotValidRequestParamException.class})
